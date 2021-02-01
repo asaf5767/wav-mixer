@@ -7,16 +7,9 @@ import (
 )
 
 func main() {
-	f, _ := os.Open("sample1.wav")
-	f2, _ := os.Open("sample3.wav")
 
-	s1, format, _ := wav.Decode(f)
-	s2, _, _ := wav.Decode(f2)
-
-	//s1.Seek(50000)
-
-	leftCh := multiplyChannels(1, 0, s1)
-	rightCh := multiplyChannels(0, 1, s2)
+	leftCh, format := readWavToChannel("sample3.wav", 1, 0)
+	rightCh, format := readWavToChannel("sample1.wav", 0, 1)
 
 	mixedStream := beep.Mix(leftCh, rightCh)
 
@@ -28,6 +21,13 @@ func main() {
 	defer f.Close()
 
 	wav.Encode(f, mixedStream, format)
+}
+
+func readWavToChannel(path string, left, right float64) (beep.Streamer, beep.Format) {
+	f, _ := os.Open(path)
+	s1, format, _ := wav.Decode(f)
+	channel := multiplyChannels(left, right, s1)
+	return channel, format
 }
 
 func multiplyChannels(left, right float64, s beep.Streamer) beep.Streamer {
