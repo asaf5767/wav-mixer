@@ -1,4 +1,4 @@
-module wav-mixer
+module github.com/asaf5767/wav-mixer
 
 go 1.15
 
