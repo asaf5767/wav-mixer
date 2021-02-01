@@ -1,4 +1,4 @@
-package main
+package wav_mixer
 
 import (
 	"github.com/faiface/beep"
@@ -6,16 +6,16 @@ import (
 	"os"
 )
 
-func main() {
-	//TODO:
-	//1. accept args -> left file, right file, offsets and output
-	//2. make this an exec / library
-	leftCh, format := readWavToChannel("sample3.wav", 1, 0, 20)
-	rightCh, _ := readWavToChannel("sample1.wav", 0, 1, 10)
+//Recieves 2 .wav file paths, makes each one a mono, and mixes them into a stereo,
+//if no offset is desired, send 0
+func MixWavsWithOffset(leftPath, rightPath, outputPath string, leftOffsetSec, rightOffsetSec int) {
+
+	leftCh, format := readWavToChannel(leftPath, 1, 0, leftOffsetSec)
+	rightCh, _ := readWavToChannel(rightPath, 0, 1, rightOffsetSec)
 
 	mixedStream := beep.Mix(leftCh, rightCh)
 
-	f, err := os.Create("mixed.wav")
+	f, err := os.Create(outputPath)
 	if err != nil {
 		panic(err)
 	}
